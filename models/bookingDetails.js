@@ -25,10 +25,10 @@ const bookingschema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+    // createdAt: {
+    //     type: Date,
+    //     default: Date.now
+    // }
 });
 
 const bookingSchema = mongoose.model('bookingSchema' , bookingschema)
