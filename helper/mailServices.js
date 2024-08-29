@@ -13,9 +13,9 @@ exports.sendGreetMail = async (to, name) => {
 
     const html = `
     <div style="font-family: Arial, sans-serif; color: #333;">
-        <div style="background-color: #f7f7f7; padding: 20px; text-align: center;">
-            <h1 style="color: #007bff;">Welcome to WorkWave!</h1>
-        </div>
+        <img src="https://res.cloudinary.com/dwd71kz3s/image/upload/v1724846253/cmvtodvvvgafvhfkgepi.jpg" 
+         alt="WorkWave User" 
+         style="display: block; margin: 0 auto;">
         <div style="padding: 20px; background-color: #fff; border: 1px solid #ddd; border-radius: 10px;">
             <p>Dear ${name},</p>
             <p>We're thrilled to welcome you to <strong>WorkWave</strong>!</p>
