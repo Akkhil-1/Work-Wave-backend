@@ -1,12 +1,33 @@
 const mongoose = require('mongoose')
 const bookingschema = new mongoose.Schema({
-    businessName: {
-        type: String,
-        required: true
+    name :
+    {
+        type : String,
+        required : true
+    },
+    email :
+    {
+        type : String,
+        required : true,
+        lowercase : true
+    },
+    mobile_number :
+    {
+        type : Number,
+        required : true
+    },
+    guest :
+    {
+        type : Number,
+        default : 1
+    },
+    location:{
+
     },
     serviceName: {
         type: String,
         required: true
+        // dropdown for all services
     },
     bookingDate: {
         type: Date,
@@ -24,11 +45,7 @@ const bookingschema = new mongoose.Schema({
     customerNotes: {
         type: String,
         default: ''
-    },
-    // createdAt: {
-    //     type: Date,
-    //     default: Date.now
-    // }
+    }
 });
 
 const bookingSchema = mongoose.model('bookingSchema' , bookingschema)

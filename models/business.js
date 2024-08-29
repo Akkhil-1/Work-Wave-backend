@@ -4,6 +4,11 @@ const businessSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    address :
+    {
+        type : String,
+        required : true
+    },
     state :{
         type : String,
         required : true
@@ -16,8 +21,33 @@ const businessSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
+    landmark :
+    {
+        type : String,
+        required : true
+    },
     businessType: {
         type: String,
+        required: true
+    },
+    openingTime :
+    {
+        type : String,
+        required : true
+    },
+    closingTime:
+    {
+        type : String,
+        required : true
+    },
+    offDays:{
+        type : String,
+        required : true
+    },
+    timeSlot :
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'timeSlot',
         required: true
     },
     // owner: {
@@ -32,6 +62,16 @@ const businessSchema = new mongoose.Schema({
     //             type: String,
     //             required: true
     //         },
+    //         duration :
+    //          {
+    //              type : String
+    //              required: true
+    //          },
+    //         noOfSeats :
+    //          {
+    //              type : Number
+    //              required: true
+    //          }
     //         serviceDescription: {
     //             type: String
     //         },
@@ -51,22 +91,14 @@ const businessSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    openingHours: {
-        type : String,
-        required : true
-    },
-    offDays:{
-        type : String,
-        required : true
-    },
     businessLogo:
     {
         type : String,
     },
-    businessImages:
-    {
-        type : [String]
-    }
+    // businessImages:
+    // {
+    //     type : [String]
+    // }
 })
 
 const Business = mongoose.model('Business' , businessSchema)
