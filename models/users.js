@@ -12,15 +12,11 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
     mobile_number: {
-      type: Number,
+      type: String, // Changed from Number to String
       required: true,
       unique: true,
     },
     password: {
-      type: String,
-      required: true,
-    },
-    date_of_birth: {
       type: String,
       required: true,
     },
@@ -39,5 +35,4 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;

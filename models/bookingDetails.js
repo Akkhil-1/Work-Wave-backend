@@ -11,6 +11,10 @@ const bookingschema = new mongoose.Schema({
         required : true,
         lowercase : true
     },
+    age :{
+        type : Number,
+        required : true
+    },
     mobile_number :
     {
         type : Number,
@@ -21,14 +25,7 @@ const bookingschema = new mongoose.Schema({
         type : Number,
         default : 1
     },
-    location:{
-
-    },
-    serviceName: {
-        type: String,
-        required: true
-        // dropdown for all services
-    },
+    // service name is default that we click the service to be booked
     bookingDate: {
         type: Date,
         required: true

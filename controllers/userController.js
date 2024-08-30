@@ -8,9 +8,8 @@ const register = async (req, res) => {
     const {
       name,
       email,
-      password,
-      date_of_birth,
       mobile_number,
+      password,
       gender,
       address,
     } = req.body;

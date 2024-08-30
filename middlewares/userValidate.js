@@ -7,23 +7,25 @@ const genderSchema = zod.string().refine(value => ['Male', 'Female', 'Other'].in
 const schemaOne = zod.object({
     name: zod.string().min(1, "Name is required"),
     email: zod.string().email("Invalid email address").min(1, "Email is required"),
-    password: zod.string().min(6, "Password must be at least 6 characters long"),
     mobile_number: zod.string()
         .length(10, 'Mobile number must be exactly 10 digits')
         .regex(/^\d+$/, 'Mobile number must contain only digits'),
+    password: zod.string().min(6, "Password must be at least 6 characters long"),
     gender: genderSchema,
-    address: zod.string().min(2, "Address must be at least 5 characters long")
+    address: zod.string().min(2, "Address must be at least 5 characters long"),
 });
+
 
 function validateSignup(req, res, next) {
     try {
-        // Parse the entire req.body against the schema
+        console.log('Received data:', req.body); // Log received data
         const result = schemaOne.safeParse(req.body);
         
         if (!result.success) {
             console.log('Validation failed:', result.error.errors);
             return res.status(400).json({
-                msg: 'Field key is missing or empty'
+                msg: 'Validation failed',
+                errors: result.error.errors
             });
         }
 
@@ -36,5 +38,4 @@ function validateSignup(req, res, next) {
         });
     }
 }
-
 module.exports = validateSignup;
