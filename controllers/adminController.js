@@ -101,9 +101,6 @@ const login = async (req, res) => {
     return res.status(500).json({ msg: "An error occurred during login" });
   }
 };
-
-
-
 const updateAdmin = async (req, res) => {
   try {
     const id = req.params._id;
