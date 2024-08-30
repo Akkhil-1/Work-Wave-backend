@@ -10,9 +10,7 @@ function userLogin(req, res, next) {
             msg: "Authorization header is missing"
         });
     }
-
     const jwtToken = authorizationHeader.split(" ")[1];
-
     try {
         const decodedValue = jwt.verify(jwtToken, JWT_SECRET);
         if (decodedValue.username) {

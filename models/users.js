@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
     mobile_number: {
-      type: String, // Changed from Number to String
+      type: String,
       required: true,
       unique: true,
     },

@@ -31,7 +31,6 @@ const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      date_of_birth,
       mobile_number,
       gender,
       address,
@@ -59,41 +58,51 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   try {
+    console.log('Received login request:', req.body); // Debug log to see what is coming in
+
     const { email, password } = req.body;
+
+    // Ensure all fields are filled
     for (const key in req.body) {
       if (!req.body[key] || req.body[key].trim() === "") {
+        console.log(`Field ${key} is missing or empty`); // Debug log
         return res.status(400).json({
           status: 400,
           msg: `Field ${key} is missing or empty`,
         });
       }
     }
-    console.log("Email:", email);
-    console.log("Password:", password);
-
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
 
     if (!user) {
+      console.log("User not found with the provided email")
+      return res.status(401).json({ msg: "Incorrect credentials" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      console.log("Password does not match");
       return res.status(401).json({ msg: "Incorrect credentials" });
     }
 
-    // Compare both the passwords and check if they match
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Generate JWT token if authentication is successful
+    const token = jwt.sign({ email: user.email }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    if (isMatch) {
-      const token = jwt.sign({ email: user.email }, JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      res.json({ token });
-    } else {
-      res.status(401).json({ msg: "Incorrect credentials" });
-    }
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000,
+    });
+
+    console.log("Login successful, returning token")
+    return res.status(200).json({ token });
+
   } catch (err) {
-    console.log("Error:", err);
-    res.status(500).json({ msg: "An error occurred" });
+    console.error("Error during login:", err)
+    return res.status(500).json({ msg: "An error occurred during login" });
   }
 };
-
 const updateUser = async (req, res) => {
   try {
     const id = req.params._id;
