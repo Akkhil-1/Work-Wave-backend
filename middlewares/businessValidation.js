@@ -1,14 +1,19 @@
 const zod = require('zod');
 const schemaOne = zod.object({
     businessName : zod.string().min(3),
-    state : zod.string().min(1),
-    city : zod.string().min(1),
-    pincode: zod.number()
-    .refine(value => value.toString().length === 6, {
-        message: "Pincode must be a 6-digit number",
+    address : zod.string().min(3),
+    state : zod.string().min(3),
+    city : zod.string().min(3),
+    pincode: zod
+    .string()
+    .regex(/^\d{6}$/, {
+      message: "Pincode must be a 6-digit number",
     }),
+    landmark : zod.string().min(3),  
     businessType : zod.string().min(1),
-    // add owner and services
+    openingTime : zod.string(),
+    closingTime : zod.string(),
+    offDays : zod.string(),
     contactEmail : zod.string().email().min(1),
     contactPhone: zod.string()
     .length(10, 'Mobile number must be exactly 10 digits')
@@ -17,11 +22,10 @@ const schemaOne = zod.object({
 function validateBusiness(req, res, next) {
     try
     {
-        const {businessName, state , city , pincode , businessType , contactEmail , contactPhone} = req.body;
-        schemaOne.safeParse(businessName, state , city , pincode , businessType , contactEmail , contactPhone)
+        const {businessName, address, state , city , pincode , landmark, businessType , openingTime, closingTime , offDays, contactEmail , contactPhone} = req.body;
+        schemaOne.safeParse(businessName, address, state , city , pincode , landmark, businessType , openingTime, closingTime , offDays, contactEmail , contactPhone)
         console.log('validation successfull');
     }
-
     catch(err)
     {
         console.log('validation not successfull' , err);

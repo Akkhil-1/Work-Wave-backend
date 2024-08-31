@@ -1,66 +1,78 @@
+const mongoose = require("mongoose");
 const Business = require("../models/business");
+const Admin = require("../models/admin");
+
 const register = async (req, res) => {
   try {
     const {
       businessName,
-      Address,
+      address,
       state,
       city,
-      Landmark,
       pincode,
+      landmark,
       businessType,
+      openingTime,
+      closingTime,
+      offDays,
       contactEmail,
       contactPhone,
-      openingHours,
-      offDays,
-      createdAt,
-      businessLogo,
     } = req.body;
-    for (const key in req.body) {
-      if (!req.body[key] || req.body[key].trim() === "") {
-        return res.status(400).json({
-          status: 400,
-          msg: `Required field ${key} is missing or empty`,
-        });
-      }
+
+    const ownerId = req.user._id;
+    const ownerDetails = await Admin.findById(ownerId).select("name email mobile_number gender");
+
+    if (!ownerDetails) {
+      return res.status(404).json({ msg: "Owner not found" });
     }
-    const user = await Business.create({
+
+    // Create the business document with embedded owner details
+    const business = await Business.create({
       businessName,
-      Address,
+      address,
       state,
       city,
       pincode,
+      landmark,
       businessType,
+      openingTime,
+      closingTime,
+      offDays,
       contactEmail,
       contactPhone,
-      openingHours,
-      offDays,
-      createdAt,
-      businessLogo,
+      owner: ownerId, // Store the owner ID reference
+      ownerDetails: {
+        _id: ownerDetails._id,
+        name: ownerDetails.name,
+        email: ownerDetails.email,
+        mobile_number: ownerDetails.mobile_number,
+        gender: ownerDetails.gender,
+      },
     });
-    console.log(user);
+
     res.json({
       msg: "Business added successfully",
+      data: business, // Return the business document with embedded owner details
     });
   } catch (err) {
     console.log(err);
-    res.json({
-      msg: "Please check the details you have entered",
+    res.status(500).json({
+      msg: "An error occurred while adding the business",
     });
   }
 };
 const getBusinesses = async (req, res) => {
   try {
-      const getData = await Business.find();
-      //  change find
-      res.json({
-          status: 200,
-          msg: "Business exist",
-          data: "fetch",
-          getData,
-      });
+    const getData = await Business.find();
+    //  change find
+    res.json({
+      status: 200,
+      msg: "Business exist",
+      data: "fetch",
+      getData,
+    });
   } catch (err) {
-      console.log(err);
+    console.log(err);
   }
 };
 

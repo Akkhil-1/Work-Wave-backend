@@ -10,5 +10,4 @@ router.post("/login", adminController.login);
 router.post("/delete-admin/:_id", adminController.deleteAdmin);
 // update info of user
 router.post("/update-admin/:_id", adminController.updateAdmin);
-
 module.exports = router;

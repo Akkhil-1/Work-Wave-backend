@@ -18,7 +18,7 @@ const businessSchema = new mongoose.Schema({
         required : true
     },
     pincode:{
-        type : Number,
+        type : String,
         required : true
     },
     landmark :
@@ -44,17 +44,6 @@ const businessSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    timeSlot :
-    {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'timeSlot',
-        required: true
-    },
-    // owner: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Admin',
-    //     required: true
-    // },
     // services: {
     //     type: Map,
     //     of: new Schema({
@@ -91,14 +80,26 @@ const businessSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    businessLogo:
-    {
-        type : String,
-    },
+    // businessLogo:
+    // {
+    //     type : String,
+    // },
     // businessImages:
     // {
     //     type : [String]
     // }
+    owner: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Admin',
+        required: true
+      }],
+      ownerDetails: {
+        _id: mongoose.Schema.Types.ObjectId,
+        name: String,
+        email: String,
+        mobile_number: Number,
+        gender: String
+      }
 })
 
 const Business = mongoose.model('Business' , businessSchema)

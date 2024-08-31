@@ -3,16 +3,10 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const bcrypt = require("bcrypt");
 const { sendGreetMail2 } = require("../helper/mairServices2");
+const mongoose = require("mongoose");
 const register = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      mobile_number,
-      password,
-      gender,
-      address,
-    } = req.body;
+    const { name, email, mobile_number, password, gender, address } = req.body;
     const existingAdmin = await Admin.findOne({
       $or: [{ email: email }, { mobile_number: mobile_number }],
     });
@@ -56,7 +50,7 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   try {
-    console.log('Received login request:', req.body); // Debug log to see what is coming in
+    console.log("Received login request:", req.body); // Debug log to see what is coming in
 
     const { email, password } = req.body;
 
@@ -70,10 +64,10 @@ const login = async (req, res) => {
         });
       }
     }
-    const admin = await Admin.findOne({ email })
+    const admin = await Admin.findOne({ email });
 
     if (!admin) {
-      console.log("Admin not found with the provided email")
+      console.log("Admin not found with the provided email");
       return res.status(401).json({ msg: "Incorrect credentials" });
     }
     const isMatch = await bcrypt.compare(password, admin.password);
@@ -84,20 +78,19 @@ const login = async (req, res) => {
     }
 
     // Generate JWT token if authentication is successful
-    const token = jwt.sign({ email: admin.email }, JWT_SECRET, {
+    const token = jwt.sign({ email: admin.email, _id: admin._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
       maxAge: 60 * 60 * 1000,
     });
 
-    console.log("Login successful, returning token")
+    console.log("Login successful, returning token");
     return res.status(200).json({ token });
-
   } catch (err) {
-    console.error("Error during login:", err)
+    console.error("Error during login:", err);
     return res.status(500).json({ msg: "An error occurred during login" });
   }
 };
@@ -174,4 +167,9 @@ const deleteAdmin = async (req, res) => {
     console.log(error);
   }
 };
-module.exports = { register, login, updateAdmin, deleteAdmin };
+module.exports = {
+  register,
+  login,
+  updateAdmin,
+  deleteAdmin,
+};
