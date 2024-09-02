@@ -1,4 +1,23 @@
 const mongoose = require("mongoose");
+
+// Define the schema for business details
+const businessDetailsSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  businessName: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+    lowercase: true,
+  },
+});
+
+// Define the admin schema
 const adminSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -28,7 +47,8 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+  adminBusinesses: [businessDetailsSchema],
+}, { timestamps: true });
 
 const Admin = mongoose.model("Admin", adminSchema);
 

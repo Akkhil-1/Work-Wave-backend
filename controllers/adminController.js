@@ -8,7 +8,7 @@ const register = async (req, res) => {
   try {
     const { name, email, mobile_number, password, gender, address } = req.body;
     const existingAdmin = await Admin.findOne({
-      $or: [{ email: email }, { mobile_number: mobile_number }],
+      $or: [{ email }, { mobile_number }],
     });
 
     if (existingAdmin) {
@@ -17,9 +17,11 @@ const register = async (req, res) => {
         msg: "Admin already exists with this email or mobile number",
       });
     }
+
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = await Admin.create({
+
+    const admin = await Admin.create({
       name,
       email,
       mobile_number,
@@ -27,37 +29,57 @@ const register = async (req, res) => {
       gender,
       address,
     });
+    let token;
+    try {
+      token = jwt.sign({ email: admin.email, _id: admin._id }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      console.log("Generated token:", token);
+    } catch (error) {
+      console.error("Error generating token:", error);
+      return res.status(500).json({
+        msg: "Failed to generate token",
+      });
+    }
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
+
     if (email && name) {
       try {
         await sendGreetMail2(email, name);
         console.log("Greeting email sent!");
       } catch (error) {
         console.error("Error sending email:", error);
-        // Optionally return if the email is critical
         return res.status(500).send("Failed to send greeting email");
       }
     }
-    console.log(user);
+
+    console.log("Admin created:", admin);
+
     return res.status(201).json({
       msg: "Admin created successfully",
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error in register function:", err);
     return res.status(500).json({
       msg: "Please check the details you have entered or try again later",
     });
   }
 };
+
 const login = async (req, res) => {
   try {
-    console.log("Received login request:", req.body); // Debug log to see what is coming in
+    console.log("Received login request:", req.body)
 
     const { email, password } = req.body;
 
     // Ensure all fields are filled
     for (const key in req.body) {
       if (!req.body[key] || req.body[key].trim() === "") {
-        console.log(`Field ${key} is missing or empty`); // Debug log
+        console.log(`Field ${key} is missing or empty`)
         return res.status(400).json({
           status: 400,
           msg: `Field ${key} is missing or empty`,

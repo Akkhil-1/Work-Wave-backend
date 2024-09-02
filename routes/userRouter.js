@@ -9,8 +9,8 @@ router.post("/login", userController.login);
 // forgot password api
 
 // delete user
-router.post("/delete-user/:_id", userController.deleteUser);
+router.post("/delete-user/:_id", userLogin , userController.deleteUser);
 // update info of user
-router.post("/update-user/:_id", userController.updateUser);
+router.post("/update-user/:_id", userLogin , userController.updateUser);
 
 module.exports = router;

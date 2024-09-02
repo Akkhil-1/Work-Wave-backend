@@ -29,7 +29,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // bookings: [bookingSchema],
+    bookingDetails: {
+      _id: mongoose.Schema.Types.ObjectId,
+      name: String,
+      email: String
+    }
   },
   { timestamps: true }
 );

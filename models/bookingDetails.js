@@ -1,50 +1,47 @@
-const mongoose = require('mongoose')
-const bookingschema = new mongoose.Schema({
-    name :
-    {
-        type : String,
-        required : true
+const mongoose = require("mongoose");
+const bookingschema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    email :
-    {
-        type : String,
-        required : true,
-        lowercase : true
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
     },
-    age :{
-        type : Number,
-        required : true
+    age: {
+      type: Number,
+      required: true,
     },
-    mobile_number :
-    {
-        type : Number,
-        required : true
+    mobile_number: {
+      type: String,
+      required: true,
     },
-    guest :
-    {
-        type : Number,
-        default : 1
+    guest: {
+      type: Number,
+      default: 1,
     },
-    // service name is default that we click the service to be booked
     bookingDate: {
-        type: Date,
-        required: true
+      type: String,
+      required: true,
     },
     bookingTime: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     status: {
-        type: String,
-        enum: ['Confirmed', 'Cancelled', 'Completed'],
-        default: 'Pending'
+      type: String,
+      enum: ["Confirmed", "Cancelled", "Completed", "Pending"],
     },
     customerNotes: {
-        type: String,
-        default: ''
-    }
-});
+      type: String,
+      default: "",
+    },
+  },
+  { timestamps: true }
+);
 
-const bookingSchema = mongoose.model('bookingSchema' , bookingschema)
+const bookingDetails = mongoose.model("bookingDetails", bookingschema);
 
-module.exports = bookingSchema
+module.exports = bookingDetails;

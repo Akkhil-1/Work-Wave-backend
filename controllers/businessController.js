@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Business = require("../models/business");
 const Admin = require("../models/admin");
-
 const register = async (req, res) => {
   try {
     const {
@@ -20,13 +19,12 @@ const register = async (req, res) => {
     } = req.body;
 
     const ownerId = req.user._id;
-    const ownerDetails = await Admin.findById(ownerId).select("name email mobile_number gender");
-
+    const ownerDetails = await Admin.findById(ownerId).select(
+      "name email"
+    );
     if (!ownerDetails) {
       return res.status(404).json({ msg: "Owner not found" });
     }
-
-    // Create the business document with embedded owner details
     const business = await Business.create({
       businessName,
       address,
@@ -40,19 +38,30 @@ const register = async (req, res) => {
       offDays,
       contactEmail,
       contactPhone,
-      owner: ownerId, // Store the owner ID reference
       ownerDetails: {
         _id: ownerDetails._id,
         name: ownerDetails.name,
         email: ownerDetails.email,
-        mobile_number: ownerDetails.mobile_number,
-        gender: ownerDetails.gender,
       },
     });
 
+    // Update the Admin with the new business details
+    await Admin.findByIdAndUpdate(
+      ownerId,
+      {
+        $push: {
+          adminBusinesses: {
+            _id: business._id,
+            businessName: business.businessName,
+            address: business.address,
+          },
+        },
+      },
+      { new: true }
+    );
     res.json({
       msg: "Business added successfully",
-      data: business, // Return the business document with embedded owner details
+      data: business,
     });
   } catch (err) {
     console.log(err);
@@ -64,7 +73,6 @@ const register = async (req, res) => {
 const getBusinesses = async (req, res) => {
   try {
     const getData = await Business.find();
-    //  change find
     res.json({
       status: 200,
       msg: "Business exist",
@@ -78,7 +86,7 @@ const getBusinesses = async (req, res) => {
 
 const updateBusiness = async (req, res) => {
   try {
-    const id = req.params._id;
+    const id = req.params._id
     const update = req.body;
 
     const schemaFields = Object.keys(Business.schema.paths);
@@ -99,9 +107,8 @@ const updateBusiness = async (req, res) => {
     }
     const updateData = await Business.findByIdAndUpdate(id, update, {
       new: true,
-      runValidators: true, //schema validation and prevent invalid data
+      runValidators: true,
     });
-
     res.josn({
       status: 200,
       msg: "Business updated",
@@ -112,7 +119,6 @@ const updateBusiness = async (req, res) => {
     console.log(error);
   }
 };
-
 const deleteBusiness = async (req, res) => {
   try {
     const id = req.params._id;
