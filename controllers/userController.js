@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { sendGreetMail } = require("../helper/mailServices");
 const { JWT_SECRET } = require("../config");
+const bookingDetails = require("../models/bookingDetails");
+
 const register = async (req, res) => {
   try {
     const { name, email, mobile_number, password, gender, address } = req.body;
@@ -25,7 +27,7 @@ const register = async (req, res) => {
       gender,
       address,
     });
-    const token = jwt.sign({ email: user.email , _id: user._id }, JWT_SECRET, {
+    const token = jwt.sign({ email: user.email, _id: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
     console.log(token);
@@ -35,11 +37,11 @@ const register = async (req, res) => {
     });
     if (email && name) {
       try {
-        await sendGreetMail(email, name)
-        console.log("Greeting email sent!")
+        await sendGreetMail(email, name);
+        console.log("Greeting email sent!");
       } catch (error) {
-        console.error("Error sending email:", error)
-        return res.status(500).send("Failed to send greeting email")
+        console.error("Error sending email:", error);
+        return res.status(500).send("Failed to send greeting email");
       }
     }
     console.log(user);
@@ -56,11 +58,11 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   try {
-    console.log("Received login request:", req.body)
+    console.log("Received login request:", req.body);
     const { email, password } = req.body;
     for (const key in req.body) {
       if (!req.body[key] || req.body[key].trim() === "") {
-        console.log(`Field ${key} is missing or empty`)
+        console.log(`Field ${key} is missing or empty`);
         return res.status(400).json({
           status: 400,
           msg: `Field ${key} is missing or empty`,
@@ -77,7 +79,7 @@ const login = async (req, res) => {
       console.log("Password does not match");
       return res.status(401).json({ msg: "Incorrect credentials" });
     }
-    const token = jwt.sign({ email: user.email , _id: user._id}, JWT_SECRET, {
+    const token = jwt.sign({ email: user.email, _id: user._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
     console.log(token);
@@ -161,4 +163,37 @@ const deleteUser = async (req, res) => {
     console.log(error);
   }
 };
-module.exports = { register, login, updateUser, deleteUser };
+const getUserBookings = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    console.log(userId);
+
+    const userWithBookings = await User.findById(userId).populate({
+      path: "bookingDetails",
+      model: "bookingDetails",
+      select:
+        "name email age mobile_number guest bookingDate bookingTime status customerNotes",
+    });
+
+    console.log(userWithBookings);
+
+    if (!userWithBookings) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    res.json({
+      status: 200,
+      msg: "User bookings retrieved successfully",
+      data: userWithBookings.bookingDetails,
+    });
+    console.log(userWithBookings.bookingDetails);
+    
+  } catch (err) {
+    console.log("Error in getUserBookings:", err);
+    res.status(500).json({
+      msg: "An error occurred while retrieving bookings",
+    });
+  }
+};
+
+module.exports = { register, login, updateUser, deleteUser, getUserBookings };

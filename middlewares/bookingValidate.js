@@ -13,6 +13,8 @@ const bookingSchema = zod.object({
     .string()
     .length(10, "Mobile number must be exactly 10 digits")
     .regex(/^\d+$/, "Mobile number must contain only digits"),
+  // serviceName : zod
+  //   .string().min(2 , "Booking Details length should be atleast 2"),
   guest: zod
     .number()
     .int("Guest count must be an integer")
@@ -33,6 +35,7 @@ function validateBooking(req, res, next) {
       email,
       age,
       mobile_number,
+      // serviceName,
       guest,
       bookingDate,
       bookingTime,
@@ -44,6 +47,7 @@ function validateBooking(req, res, next) {
       email,
       age,
       mobile_number,
+      // serviceName,
       guest,
       bookingDate,
       bookingTime,

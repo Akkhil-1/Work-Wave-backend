@@ -22,18 +22,19 @@ const userSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ["Male", "Female", "Other" , "male" , "female" , "other"],
       required: true,
     },
     address: {
       type: String,
       required: true,
     },
-    bookingDetails: [{
-      _id: mongoose.Schema.Types.ObjectId,
-      name: String,
-      email: String
-    }]
+    bookingDetails: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "bookingDetails",
+      },
+    ],
   },
   { timestamps: true }
 );

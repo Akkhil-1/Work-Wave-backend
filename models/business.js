@@ -59,9 +59,8 @@ const businessSchema = new mongoose.Schema({
   //     type : [String]
   // }
   ownerDetails: {
-    _id: mongoose.Schema.Types.ObjectId,
-    name: String,
-    email: String
+    type : mongoose.Schema.Types.ObjectId,
+    ref : 'Admin'
   },
   bookings: [{
     type: mongoose.Schema.Types.ObjectId,

@@ -41,7 +41,6 @@ const register = async (req, res) => {
         msg: "Failed to generate token",
       });
     }
-
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 60 * 60 * 1000, // 1 hour
@@ -56,9 +55,7 @@ const register = async (req, res) => {
         return res.status(500).send("Failed to send greeting email");
       }
     }
-
     console.log("Admin created:", admin);
-
     return res.status(201).json({
       msg: "Admin created successfully",
     });
@@ -75,8 +72,6 @@ const login = async (req, res) => {
     console.log("Received login request:", req.body)
 
     const { email, password } = req.body;
-
-    // Ensure all fields are filled
     for (const key in req.body) {
       if (!req.body[key] || req.body[key].trim() === "") {
         console.log(`Field ${key} is missing or empty`)
@@ -87,7 +82,6 @@ const login = async (req, res) => {
       }
     }
     const admin = await Admin.findOne({ email });
-
     if (!admin) {
       console.log("Admin not found with the provided email");
       return res.status(401).json({ msg: "Incorrect credentials" });
@@ -120,7 +114,6 @@ const updateAdmin = async (req, res) => {
   try {
     const id = req.params._id;
     const update = req.body;
-
     // Get the schema paths (field names)
     const schemaFields = Object.keys(Admin.schema.paths);
 

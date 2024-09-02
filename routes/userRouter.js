@@ -12,5 +12,6 @@ router.post("/login", userController.login);
 router.post("/delete-user/:_id", userLogin , userController.deleteUser);
 // update info of user
 router.post("/update-user/:_id", userLogin , userController.updateUser);
+router.get("/my-bookings", userLogin, userController.getUserBookings);
 
 module.exports = router;

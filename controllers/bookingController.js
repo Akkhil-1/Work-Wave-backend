@@ -9,6 +9,7 @@ const addBooking = async (req, res) => {
       email,
       age,
       mobile_number,
+      // serviveName,
       guest,
       bookingDate,
       bookingTime,
@@ -28,6 +29,7 @@ const addBooking = async (req, res) => {
       email,
       age,
       mobile_number,
+      // serviveName,
       guest,
       bookingDate,
       bookingTime,
@@ -77,7 +79,7 @@ const getBusinesses = async (req, res) => {
       msg: "An error occurred while fetching businesses",
     });
   }
-};
+}
 
 // Update booking details
 const updateBookingDetails = async (req, res) => {

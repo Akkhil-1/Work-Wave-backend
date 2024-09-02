@@ -19,9 +19,7 @@ const register = async (req, res) => {
     } = req.body;
 
     const ownerId = req.user._id;
-    const ownerDetails = await Admin.findById(ownerId).select(
-      "name email"
-    );
+    const ownerDetails = await Admin.findById(ownerId)
     if (!ownerDetails) {
       return res.status(404).json({ msg: "Owner not found" });
     }
@@ -39,21 +37,15 @@ const register = async (req, res) => {
       contactEmail,
       contactPhone,
       ownerDetails: {
-        _id: ownerDetails._id,
-        name: ownerDetails.name,
-        email: ownerDetails.email,
+        _id: ownerDetails._id
       },
     });
-
-    // Update the Admin with the new business details
     await Admin.findByIdAndUpdate(
       ownerId,
       {
         $push: {
           adminBusinesses: {
-            _id: business._id,
-            businessName: business.businessName,
-            address: business.address,
+            _id: business._id
           },
         },
       },

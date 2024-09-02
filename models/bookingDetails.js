@@ -18,6 +18,10 @@ const bookingschema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // serviceName :{
+    //   type : String,
+    //   required : true
+    // },
     guest: {
       type: Number,
       default: 1,

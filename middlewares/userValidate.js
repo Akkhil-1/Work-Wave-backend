@@ -1,6 +1,6 @@
 const zod = require('zod');
 
-const genderSchema = zod.string().refine(value => ['Male', 'Female', 'Other'].includes(value), {
+const genderSchema = zod.string().refine(value => ['Male', 'Female', 'Other' , 'male' , 'female' , 'other'].includes(value), {
     message: "Invalid gender value",
 });
 
