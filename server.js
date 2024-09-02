@@ -5,7 +5,7 @@ const dbConnect = require("../Backend/middlewares/db");
 const userRouter = require("./routes/userRouter");
 const adminRouter = require("./routes/adminRouter");
 const businessRouter = require("./routes/businessRouter");
-const bookingRouter = require('./routes/bookingDetails')
+const bookingRouter = require('./routes/bookingRouter')
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 app.use(express.json());

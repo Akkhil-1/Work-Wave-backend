@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Booking = require("../models/bookingDetails");
 const User = require("../models/users");
+const Business = require("../models/business");
 const addBooking = async (req, res) => {
   try {
     const {
@@ -12,42 +13,45 @@ const addBooking = async (req, res) => {
       bookingDate,
       bookingTime,
       status,
-      customerNotes
+      customerNotes,
     } = req.body;
 
-    // const userId = req.user._id;
-    // const userDetails = await Admin.findById(userId)
-    // if (!userDetails) {
-    //   return res.status(404).json({ msg: "User not found" });
-    // }
+    const userId = req.user._id;
+    const businessId = req.businessId;
+
+    const userDetails = await User.findById(userId);
+    if (!userDetails) {
+      return res.status(404).json({ msg: "User not found" });
+    }
     const booking = await Booking.create({
-        name,
-        email,
-        age,
-        mobile_number,
-        guest,
-        bookingDate,
-        bookingTime,
-        status,
-        customerNotes,
-        // userDetails:{
-        //     _id : userDetails._id
-        // }
+      name,
+      email,
+      age,
+      mobile_number,
+      guest,
+      bookingDate,
+      bookingTime,
+      status,
+      customerNotes,
     });
-    // Update the User with the new business details
-    // await User.findByIdAndUpdate(
-    //   userId,
-    //   {
-    //     $push: {
-    //       bookingDetails: {
-    //         _id: booking._id,
-    //       },
-    //     }
-    //   },
-    //   { new: true }
-    // )
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: {
+          bookingDetails: {
+            _id: booking._id,
+          },
+        },
+      },
+      { new: true }
+    );
+    await Business.findByIdAndUpdate(
+      businessId,
+      { $push: { bookings: booking._id } },
+      { new: true }
+    );
     res.json({
-      msg: "Booking Done successfully",
+      msg: "Booking done successfully",
       data: booking,
     });
   } catch (err) {
@@ -57,23 +61,28 @@ const addBooking = async (req, res) => {
     });
   }
 };
-const getBookingDetails = async (req, res) => {
+
+// Get all businesses with their bookings
+const getBusinesses = async (req, res) => {
   try {
-    const getData = await Booking.find();
+    const businesses = await Business.find().populate('bookings'); // Populate bookings
     res.json({
       status: 200,
-      msg: "Bookings exist",
-      data: "fetch",
-      getData,
+      msg: "Businesses exist",
+      data: businesses,
     });
   } catch (err) {
     console.log(err);
+    res.status(500).json({
+      msg: "An error occurred while fetching businesses",
+    });
   }
 };
 
+// Update booking details
 const updateBookingDetails = async (req, res) => {
   try {
-    const id = req.params._id;
+    const id = req.params.id; // Changed from _id to id
     const update = req.body;
 
     const schemaFields = Object.keys(Booking.schema.paths);
@@ -96,19 +105,23 @@ const updateBookingDetails = async (req, res) => {
       new: true,
       runValidators: true,
     });
-    res.josn({
+    res.json({
       status: 200,
-      msg: "Bookings updated",
-      data: "updated",
-      updateData,
+      msg: "Booking updated",
+      data: updateData,
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      msg: "An error occurred while updating the booking",
+    });
   }
 };
+
+// Delete booking
 const deleteBooking = async (req, res) => {
   try {
-    const id = req.params._id;
+    const id = req.params.id; // Changed from _id to id
     const deleteData = await Booking.findByIdAndDelete(id);
     if (deleteData) {
       res.json({
@@ -117,13 +130,16 @@ const deleteBooking = async (req, res) => {
         data: deleteData,
       });
     } else {
-      res.json({
-        status: 404,
+      res.status(404).json({
         msg: "Booking not found",
       });
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      msg: "An error occurred while deleting the booking",
+    });
   }
 };
-module.exports = { addBooking, getBookingDetails, updateBookingDetails, deleteBooking};
+
+module.exports = { addBooking, getBusinesses, updateBookingDetails, deleteBooking };

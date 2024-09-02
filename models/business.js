@@ -62,7 +62,11 @@ const businessSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: String,
     email: String
-  }
+  },
+  bookings: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Booking",
+  }],
 },{timestamps : true});
 const Business = mongoose.model("Business", businessSchema);
 module.exports = Business;

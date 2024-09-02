@@ -1,32 +1,28 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
-
-function userLogin(req, res, next) {
-  const authorizationHeader = req.headers.authorization;
-
-  if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-    console.error("Authorization header is missing");
-    return res.status(403).json({
-      msg: "Authorization header is missing",
-    });
-  }
-  const jwtToken = authorizationHeader.split(" ")[1];
+const User = require("../models/users");
+const userLogin = async (req, res, next) => {
   try {
-    const decodedValue = jwt.verify(jwtToken, JWT_SECRET);
-    if (decodedValue.username) {
-      req.user = decodedValue;
-      next();
-    } else {
-      res.status(403).json({
-        msg: "You are not authenticated",
-      });
+    const token = req.cookies.token;
+    console.log(token);
+
+    if (!token) {
+      return res.status(401).json({ msg: "No token, authorization denied" });
     }
-  } catch (error) {
-    console.error("Invalid token:", error);
-    res.status(403).json({
-      msg: "Invalid token",
-    });
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded._id); // Ensure you're using the correct field (e.g., decoded.id or decoded._id)
+
+    if (!user) {
+      return res.status(401).json({ msg: "Unauthorized" });
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log("Auth error:", err.message);
+    res.status(401).json({ msg: "Token is not valid" });
   }
-}
+};
 
 module.exports = userLogin;
