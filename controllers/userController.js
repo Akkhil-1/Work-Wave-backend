@@ -187,7 +187,6 @@ const getUserBookings = async (req, res) => {
       data: userWithBookings.bookingDetails,
     });
     console.log(userWithBookings.bookingDetails);
-    
   } catch (err) {
     console.log("Error in getUserBookings:", err);
     res.status(500).json({

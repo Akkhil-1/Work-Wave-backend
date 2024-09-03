@@ -29,11 +29,13 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    adminBusinesses: [{
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Business",
-  }],
+    adminBusinesses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Business",
+      },
+    ],
   },
   { timestamps: true }
 );

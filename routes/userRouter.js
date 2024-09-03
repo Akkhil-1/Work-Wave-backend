@@ -6,7 +6,6 @@ const userLogin = require("../middlewares/userLogin");
 
 router.post("/signup", userValidation, userController.register);
 router.post("/login", userController.login);
-// forgot password api
 
 // delete user
 router.post("/delete-user/:_id", userLogin , userController.deleteUser);

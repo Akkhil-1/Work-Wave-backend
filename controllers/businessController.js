@@ -18,11 +18,11 @@ const register = async (req, res) => {
       contactPhone,
     } = req.body;
 
-    const ownerId = req.user._id;
-    const ownerDetails = await Admin.findById(ownerId)
-    if (!ownerDetails) {
-      return res.status(404).json({ msg: "Owner not found" });
-    }
+    // const ownerId = req.user._id;
+    // const ownerDetails = await Admin.findById(ownerId);
+    // if (!ownerDetails) {
+    //   return res.status(404).json({ msg: "Owner not found" });
+    // }
     const business = await Business.create({
       businessName,
       address,
@@ -36,21 +36,21 @@ const register = async (req, res) => {
       offDays,
       contactEmail,
       contactPhone,
-      ownerDetails: {
-        _id: ownerDetails._id
-      },
+      // ownerDetails: {
+      //   _id: ownerDetails._id,
+      // },
     });
-    await Admin.findByIdAndUpdate(
-      ownerId,
-      {
-        $push: {
-          adminBusinesses: {
-            _id: business._id
-          },
-        },
-      },
-      { new: true }
-    );
+    // await Admin.findByIdAndUpdate(
+    //   ownerId,
+    //   {
+    //     $push: {
+    //       adminBusinesses: {
+    //         _id: business._id,
+    //       },
+    //     },
+    //   },
+    //   { new: true }
+    // );
     res.json({
       msg: "Business added successfully",
       data: business,
@@ -78,7 +78,7 @@ const getBusinesses = async (req, res) => {
 
 const updateBusiness = async (req, res) => {
   try {
-    const id = req.params._id
+    const id = req.params._id;
     const update = req.body;
 
     const schemaFields = Object.keys(Business.schema.paths);
