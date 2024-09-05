@@ -8,7 +8,7 @@ const schemaOne = zod.object({
     message: "Pincode must be a 6-digit number",
   }),
   landmark: zod.string().min(3),
-  businessType: zod.string().min(1),
+  businessType: zod.string(),
   openingTime: zod.string(),
   closingTime: zod.string(),
   offDays: zod.string(),

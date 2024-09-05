@@ -1,14 +1,16 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/users");
 const { JWT_SECRET } = require("../config");
-const authMiddleware = async (req, res, next) => {
+const userauthMiddleware = async (req, res, next) => {
   try {
     const token = req.cookies.token;
     console.log(token);
+    console.log("hi");
     if (!token) {
       return res.status(401).json({ msg: "No token, authorization denied" });
     }
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log(decoded);
     const user = await User.findById(decoded._id);
     if (!user) {
       return res.status(401).json({ msg: "Unauthorized" });
@@ -20,4 +22,4 @@ const authMiddleware = async (req, res, next) => {
     res.status(401).json({ msg: "Token is not valid" });
   }
 }
-module.exports = authMiddleware;
+module.exports = userauthMiddleware;

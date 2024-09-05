@@ -13,12 +13,12 @@ const addBooking = async (req, res) => {
       guest,
       bookingDate,
       bookingTime,
-      status,
+      // status,
       customerNotes,
     } = req.body;
 
     const userId = req.user._id;
-    const businessId = req.businessId;
+    // const businessId = req.businessId;
 
     const userDetails = await User.findById(userId);
     if (!userDetails) {
@@ -33,7 +33,7 @@ const addBooking = async (req, res) => {
       guest,
       bookingDate,
       bookingTime,
-      status,
+      // status,
       customerNotes,
     });
     await User.findByIdAndUpdate(
@@ -47,11 +47,11 @@ const addBooking = async (req, res) => {
       },
       { new: true }
     );
-    await Business.findByIdAndUpdate(
-      businessId,
-      { $push: { bookings: booking._id } },
-      { new: true }
-    );
+    // await Business.findByIdAndUpdate(
+    //   businessId,
+    //   { $push: { bookings: booking._id } },
+    //   { new: true }
+    // );
     res.json({
       msg: "Booking done successfully",
       data: booking,

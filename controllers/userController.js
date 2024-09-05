@@ -32,8 +32,9 @@ const register = async (req, res) => {
     });
     console.log(token);
     res.cookie("token", token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 60 * 60 * 1000,
+      ameSite: "none",
     });
     if (email && name) {
       try {
@@ -84,8 +85,9 @@ const login = async (req, res) => {
     });
     console.log(token);
     res.cookie("token", token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 60 * 60 * 1000,
+      sameSite: "none",
     });
     console.log("Login successful, returning token");
     return res.status(200).json({ token });

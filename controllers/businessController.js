@@ -3,54 +3,30 @@ const Business = require("../models/business");
 const Admin = require("../models/admin");
 const register = async (req, res) => {
   try {
-    const {
-      businessName,
-      address,
-      state,
-      city,
-      pincode,
-      landmark,
-      businessType,
-      openingTime,
-      closingTime,
-      offDays,
-      contactEmail,
-      contactPhone,
-    } = req.body;
-
-    // const ownerId = req.user._id;
-    // const ownerDetails = await Admin.findById(ownerId);
-    // if (!ownerDetails) {
-    //   return res.status(404).json({ msg: "Owner not found" });
-    // }
+    const { businessData } = req.body;
+    console.log(businessData);
+    const ownerId = req.user._id;
+    const ownerDetails = await Admin.findById(ownerId);
+    if (!ownerDetails) {
+      return res.status(404).json({ msg: "Owner not found" });
+    }
     const business = await Business.create({
-      businessName,
-      address,
-      state,
-      city,
-      pincode,
-      landmark,
-      businessType,
-      openingTime,
-      closingTime,
-      offDays,
-      contactEmail,
-      contactPhone,
-      // ownerDetails: {
-      //   _id: ownerDetails._id,
-      // },
+      ...businessData,
+      ownerDetails: {
+        _id: ownerDetails._id,
+      },
     });
-    // await Admin.findByIdAndUpdate(
-    //   ownerId,
-    //   {
-    //     $push: {
-    //       adminBusinesses: {
-    //         _id: business._id,
-    //       },
-    //     },
-    //   },
-    //   { new: true }
-    // );
+    await Admin.findByIdAndUpdate(
+      ownerId,
+      {
+        $push: {
+          adminBusinesses: {
+            _id: business._id,
+          },
+        },
+      },
+      { new: true }
+    );
     res.json({
       msg: "Business added successfully",
       data: business,

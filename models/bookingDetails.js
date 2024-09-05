@@ -34,10 +34,10 @@ const bookingschema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["Confirmed", "Cancelled", "Completed", "Pending"],
-    },
+    // status: {
+    //   type: String,
+    //   enum: ["Confirmed", "Cancelled", "Completed", "Pending"],
+    // },
     customerNotes: {
       type: String,
       default: "",

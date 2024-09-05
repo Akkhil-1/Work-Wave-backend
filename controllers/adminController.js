@@ -29,22 +29,23 @@ const register = async (req, res) => {
       gender,
       address,
     });
-    let token;
-    try {
-      token = jwt.sign({ email: admin.email, _id: admin._id }, JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      console.log("Generated token:", token);
-    } catch (error) {
-      console.error("Error generating token:", error);
-      return res.status(500).json({
-        msg: "Failed to generate token",
-      });
-    }
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 1000, // 1 hour
-    });
+    // let token;
+    // try {
+    //   token = jwt.sign({ email: admin.email, _id: admin._id }, JWT_SECRET, {
+    //     expiresIn: "1h",
+    //   });
+    //   console.log("Generated token:", token);
+    // } catch (error) {
+    //   console.error("Error generating token:", error);
+    //   return res.status(500).json({
+    //     msg: "Failed to generate token",
+    //   });
+    // }
+    // res.cookie("token", token, {
+    //   httpOnly: false,
+    //   maxAge: 60 * 60 * 1000, // 1 hour
+    //   sameSite: "none",
+    // });
 
     if (email && name) {
       try {
@@ -69,12 +70,12 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log("Received login request:", req.body)
+    console.log("Received login request:", req.body);
 
     const { email, password } = req.body;
     for (const key in req.body) {
       if (!req.body[key] || req.body[key].trim() === "") {
-        console.log(`Field ${key} is missing or empty`)
+        console.log(`Field ${key} is missing or empty`);
         return res.status(400).json({
           status: 400,
           msg: `Field ${key} is missing or empty`,
@@ -97,10 +98,10 @@ const login = async (req, res) => {
     const token = jwt.sign({ email: admin.email, _id: admin._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-
     res.cookie("token", token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 60 * 60 * 1000,
+      sameSite: "none",
     });
 
     console.log("Login successful, returning token");

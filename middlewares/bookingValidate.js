@@ -8,7 +8,7 @@ const bookingSchema = zod.object({
     .string()
     .email("Invalid email address")
     .nonempty("Email is required"),
-  age: zod.number().int("Age must be an integer").min(1, "Age is required"),
+  age: zod.string().min(1, "Age is required"),
   mobile_number: zod
     .string()
     .length(10, "Mobile number must be exactly 10 digits")
@@ -16,15 +16,14 @@ const bookingSchema = zod.object({
   // serviceName : zod
   //   .string().min(2 , "Booking Details length should be atleast 2"),
   guest: zod
-    .number()
-    .int("Guest count must be an integer")
+    .string()
     .min(1, "At least one guest is required")
     .default(1),
   bookingDate: zod.string(),
   bookingTime: zod.string().nonempty("Booking time is required"),
-  status: zod
-    .enum(["Confirmed", "Cancelled", "Completed", "Pending"])
-    .optional(),
+  // status: zod
+  //   .enum(["Confirmed", "Cancelled", "Completed", "Pending"])
+  //   .optional(),
   customerNotes: zod.string().optional(),
 });
 
