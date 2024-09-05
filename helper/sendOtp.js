@@ -1,33 +1,30 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 const UserModel = require("../models/users");
-const crypto = require("crypto");
+const crypto = require('crypto');
+const otp = crypto.randomInt(100000,999999).toString();
 
-const sendOtp = async (req, res) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "amber1251.be22@chitkara.edu.in",
-      pass: "amberdhama@5678",
-    },
-  });
+const sendOtp = async (req,res) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth:{
+            user: 'amber1251.be22@chitkara.edu.in',
+            pass: 'amberdhama@5678'
+        }
+    })
+    const {email} = req.body;
+    const user = await UserModel.findOne({email:email})
+    if(!user){
+        return res.status(400).json({
+            msg:"User not found"
+        })
+    }
 
-  const { email } = req.body;
-  const user = await UserModel.findOne({ email: email });
-  if (!user) {
-    return res.status(400).json({
-      msg: "User not found",
-    });
-  }
-
-  // Generate a new OTP inside the function
-  const otp = crypto.randomInt(100000, 999999).toString();
-
-  const mailOptions = {
-    from: "amber1251.be22@chitkara.edu.in",
-    to: email,
-    subject: "Password Reset",
-    html: `
-<!DOCTYPE html>
+    const mailOptions = {
+        from: 'amber1251.be22@chitkara.edu.in',
+        to: email,
+        subject: 'Password Reset',
+        html: `
+            <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -170,23 +167,23 @@ const sendOtp = async (req, res) => {
     </div>
 </body>
 </html>
-        `,
-  };
-
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({
-        msg: "Failed to send email",
-      });
+        `
     }
-    res.status(200).json({
-      msg: "OTP sent successfully",
-      otp, // Return OTP in the response for debugging; remove in production
-    });
-  });
-};
 
+    transporter.sendMail(mailOptions,(err,info)=>{
+        if(err){
+            console.log(err)
+            return res.status(500).json({
+                msg:"Failed to send email "
+            })
+        }
+        res.status(200).json({
+            msg:"Otp send successfully",
+            otp
+        })
+    })
+}
 module.exports = {
-  sendOtp,
-};
+    sendOtp,
+    otp,
+}

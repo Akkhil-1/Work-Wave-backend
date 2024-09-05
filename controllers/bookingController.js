@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Booking = require("../models/bookingDetails");
 const User = require("../models/users");
 const Business = require("../models/business");
+const { sendBookingMail } = require("../helper/bookingMail");
 const addBooking = async (req, res) => {
   try {
     const {
@@ -52,6 +53,7 @@ const addBooking = async (req, res) => {
     //   { $push: { bookings: booking._id } },
     //   { new: true }
     // );
+    await sendBookingMail(email, name, bookingDate, bookingTime, guest);
     res.json({
       msg: "Booking done successfully",
       data: booking,

@@ -10,7 +10,7 @@ const register = async (req, res) => {
     const { name, email, mobile_number, password, gender, address } = req.body;
     const existingUser = await User.findOne({
       $or: [{ email: email }, { mobile_number: mobile_number }],
-    });
+    })
     if (existingUser) {
       console.log("User already exists");
       return res.status(400).json({
