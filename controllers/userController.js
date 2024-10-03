@@ -195,6 +195,5 @@ const getUserBookings = async (req, res) => {
       msg: "An error occurred while retrieving bookings",
     });
   }
-};
-
+}
 module.exports = { register, login, updateUser, deleteUser, getUserBookings };
